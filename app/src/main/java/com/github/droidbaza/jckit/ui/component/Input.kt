@@ -64,7 +64,7 @@ import com.github.droidbaza.jckit.ui.theme.active
 import com.github.droidbaza.jckit.ui.theme.disabled
 
 @Immutable
-data class TextFieldColorStyle(
+data class InputColorStyle(
     val color: Color = Color.Unspecified,
     val disabledColor: Color = color.disabled,
     val focusColor: Color = color.active,
@@ -165,13 +165,13 @@ data class TextFieldColorStyle(
 }
 
 @Immutable
-data class TextFieldColorStyles(
-    val primary: TextFieldColorStyle,
-    val secondary: TextFieldColorStyle,
-    val outline: TextFieldColorStyle,
+data class InputColorStyles(
+    val primary: InputColorStyle,
+    val secondary: InputColorStyle,
+    val outline: InputColorStyle,
 )
 
-val LocalTextFieldColor = compositionLocalOf<TextFieldColorStyles> {
+val LocalInputColor = compositionLocalOf<InputColorStyles> {
     error("No TextFieldColor provided")
 }
 
@@ -187,12 +187,12 @@ private fun Decoration(contentColor: Color, content: @Composable () -> Unit) =
 
 
 @Composable
-fun rememberTextFieldColor(
+fun rememberInputColor(
     theme: JCKitTheme = LocalTheme.current
-): TextFieldColorStyles {
+): InputColorStyles {
     return with(theme.color) {
-        TextFieldColorStyles(
-            primary = TextFieldColorStyle(
+        InputColorStyles(
+            primary = InputColorStyle(
                 color = background,
                 inputColor = onSurface,
                 labelColor = onSurfaceSecondary,
@@ -203,7 +203,7 @@ fun rememberTextFieldColor(
                 errorBorderColor = error,
                 errorMsgColor = error,
             ),
-            secondary = TextFieldColorStyle(
+            secondary = InputColorStyle(
                 color = background,
                 inputColor = onSurface,
                 labelColor = onSurfaceSecondary,
@@ -213,7 +213,7 @@ fun rememberTextFieldColor(
                 iconStartTint = error,
                 errorBorderColor = error
             ),
-            outline = TextFieldColorStyle(
+            outline = InputColorStyle(
                 color = background,
                 inputColor = onSurface,
                 labelColor = onSurfaceSecondary,
@@ -258,15 +258,15 @@ fun rememberKeyboardVisible(): State<Boolean> {
 
 
 @Composable
-fun TextField(
-    input: String = "",
-    label: String? = null,
+fun Input(
+    inputText: String = "",
+    labelText: String? = null,
     placeHolder: String? = null,
     error: Boolean = false,
     errorMessage: String? = null,
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
-    style: TextFieldColorStyle = LocalTextFieldColor.current.primary,
+    style: InputColorStyle = LocalInputColor.current.primary,
     readOnly: Boolean = false,
     border: Dp? = LocalBorder.current.medium,
     radius: Dp = LocalRadius.current.medium,
@@ -307,7 +307,7 @@ fun TextField(
     val borderStroke = remember(borderColor) {
         if (border != null) BorderStroke(border, borderColor) else null
     }
-    val inputActivated = focused || input.isNotEmpty()
+    val inputActivated = focused || inputText.isNotEmpty()
     val labelFontSize by animateFloatAsState(
         targetValue = if (inputActivated) labelStyle.fontSize.value else inputStyle.fontSize.value,
         animationSpec = tween(100)
@@ -329,7 +329,7 @@ fun TextField(
     Column {
         BasicTextField(
             modifier = modifier.focusable(),
-            value = input,
+            value = inputText,
             onValueChange = onValueChange,
             enabled = enabled,
             readOnly = readOnly,
@@ -355,9 +355,9 @@ fun TextField(
                         contentStart?.invoke()
                     }
                     Box(contentAlignment = Alignment.CenterStart) {
-                        if (label != null) {
+                        if (labelText != null) {
                             Text(
-                                text = label,
+                                text = labelText,
                                 style = labelStyle.copy(
                                     color = labelColor,
                                     fontSize = labelFontSize.sp
@@ -367,11 +367,11 @@ fun TextField(
                         }
                         if (inputActivated) {
                             Column {
-                                if (label != null) {
+                                if (labelText != null) {
                                     Spacer(Modifier.padding(top = labelSize.dp))
                                 }
                                 Box {
-                                    if (input.isEmpty() && placeHolder != null) {
+                                    if (inputText.isEmpty() && placeHolder != null) {
                                         Text(
                                             text = placeHolder,
                                             style = inputStyle.copy(color = placeHolderColor)
@@ -401,7 +401,7 @@ fun TextField(
 
 
 @Composable
-fun IconTextField(
+fun IconInput(
     input: String = "",
     label: String? = null,
     @DrawableRes
@@ -413,7 +413,7 @@ fun IconTextField(
     errorMessage: String? = null,
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
-    style: TextFieldColorStyle = LocalTextFieldColor.current.primary,
+    style: InputColorStyle = LocalInputColor.current.primary,
     readOnly: Boolean = false,
     border: Dp? = LocalBorder.current.medium,
     radius: Dp = LocalRadius.current.medium,
@@ -431,7 +431,7 @@ fun IconTextField(
     interactionSource: MutableInteractionSource? = null,
     onValueChange: (String) -> Unit = {},
 ){
-    TextField(
+    Input(
         maxLines = maxLines,
         minLines = minLines,
         labelStyle = labelStyle,
@@ -449,9 +449,9 @@ fun IconTextField(
         enabled = enabled,
         modifier = modifier,
         style = style,
-        input = input,
+        inputText = input,
         readOnly = readOnly,
-        label = label,
+        labelText = label,
         error = error,
         placeHolder =placeHolder,
         errorMessage =errorMessage,
@@ -469,7 +469,7 @@ fun IconTextField(
 }
 
 @Composable
-fun IconTextField(
+fun IconInput(
     input: String = "",
     label: String? = null,
     iconStart: ImageVector? = null,
@@ -479,7 +479,7 @@ fun IconTextField(
     errorMessage: String? = null,
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
-    style: TextFieldColorStyle = LocalTextFieldColor.current.primary,
+    style: InputColorStyle = LocalInputColor.current.primary,
     readOnly: Boolean = false,
     border: Dp? = LocalBorder.current.medium,
     radius: Dp = LocalRadius.current.medium,
@@ -498,7 +498,7 @@ fun IconTextField(
     onValueChange: (String) -> Unit = {},
 ){
 
-    TextField(
+    Input(
         maxLines = maxLines,
         minLines = minLines,
         labelStyle = labelStyle,
@@ -516,9 +516,9 @@ fun IconTextField(
         enabled = enabled,
         modifier = modifier,
         style = style,
-        input = input,
+        inputText = input,
         readOnly = readOnly,
-        label = label,
+        labelText = label,
         error = error,
         placeHolder =placeHolder,
         errorMessage =errorMessage,
@@ -537,14 +537,14 @@ fun IconTextField(
 }
 @Preview(showSystemUi = true)
 @Composable
-fun PreviewTextFields() {
+fun PreviewInputs() {
     Column(modifier = Modifier.padding(vertical = 48.dp, horizontal = 24.dp)) {
         var inputText by remember { mutableStateOf("") }
         var isError by remember { mutableStateOf(false) }
 
-        TextField(
-            input = inputText,
-            label = "Введите текст",
+        Input(
+            inputText = inputText,
+            labelText = "Введите текст",
             error = isError,
             placeHolder = "Запрос,Описание,И тд",
             errorMessage = if (isError) "Максимум 10 символов" else null,

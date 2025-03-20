@@ -6,9 +6,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.compositionLocalOf
 import com.github.droidbaza.jckit.ui.component.LocalButtonColor
-import com.github.droidbaza.jckit.ui.component.LocalTextFieldColor
+import com.github.droidbaza.jckit.ui.component.LocalInputColor
 import com.github.droidbaza.jckit.ui.component.rememberButtonColor
-import com.github.droidbaza.jckit.ui.component.rememberTextFieldColor
+import com.github.droidbaza.jckit.ui.component.rememberInputColor
 
 @Immutable
 data class JCKitTheme(
@@ -32,12 +32,12 @@ fun AppTheme(
 ) {
     val theme = if (darkTheme) DarkTheme else LightTheme
     val buttonColor = rememberButtonColor()
-    val textFieldColor = rememberTextFieldColor()
+    val textFieldColor = rememberInputColor()
 
     CompositionLocalProvider(
         LocalColor provides theme.color,
         LocalButtonColor provides buttonColor,
-        LocalTextFieldColor provides textFieldColor,
+        LocalInputColor provides textFieldColor,
         LocalTypography provides theme.typography,
         LocalSize provides theme.size,
         LocalRadius provides theme.radius,
